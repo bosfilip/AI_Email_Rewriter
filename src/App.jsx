@@ -5,9 +5,11 @@ import ResultPanel from './resultPanel'
 function App() {
   return(
   <>
-    <Header/>
-    <EditorPanel/>
-    <ResultPanel/>
+      <Header/>
+      <div className='flex gap-5 px-10 py-10 justify-center'>
+        <EditorPanel/>
+        <ResultPanel/>
+      </div>
   </>
   )
 }
