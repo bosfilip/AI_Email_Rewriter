@@ -1,7 +1,17 @@
 import React from 'react';
+import { useState } from 'react';
+import Subjest from './subject.jsx'
 import ToneButton from './toneButton.jsx'
+import Email from './email.jsx';
 
 export default function EditorPanel() {
+
+    const [subject,setSubject] = useState('')
+    const [email,setEmail] = useState("")
+    const [selectedTone,setSelectedTone] =useState("")
+
+    const tones = ["Friendly","Formal","Concise","Confident","Polite Rejection"]
+
     return (
         <div className="w-[550px] flex flex-col gap-6 rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-lg">
             
@@ -11,35 +21,23 @@ export default function EditorPanel() {
                 </div>
             </div>
 
-            <div className="flex flex-col gap-1">
-                <label className="text-sm font-medium text-gray-700">Subject</label>
-                <input 
-                    type="text" 
-                    className="text-xs w-full rounded-lg border border-gray-300 bg-gray-50 p-3 placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none" 
-                    placeholder="e.g., Project Update Q3" 
-                />
-            </div>
-
-            <div className="flex flex-1 flex-col gap-1">
-                <label className="text-sm font-medium text-gray-700">Email Content</label>
-                <textarea 
-                    className="text-xs w-full flex-1 rounded-lg border border-gray-300 bg-gray-50 p-3 placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none resize-none" 
-                    rows={10} 
-                    placeholder="Paste or type your email here..."
-                ></textarea>
-                <p className="mt-1 text-xs text-gray-500">Paste or type your email here. The more context you provide, the better the result.</p>
-            </div>
+            <Subjest value={subject} onChange={setSubject}/>
+            <Email value={email} onChange={setEmail}/>
 
             <div className="flex flex-col gap-3">
 
                 <h3 className="text-base font-bold text-gray-900">Choose Tone</h3>
                 <div className="flex flex-wrap gap-2">
-                    <ToneButton>Friendly</ToneButton>
-                    <ToneButton>Formal</ToneButton>
-                    <ToneButton>Confident</ToneButton>
-                    <ToneButton>Concise</ToneButton>
-                    <ToneButton>Polite Rejection</ToneButton>
+                    
+                    {tones.map((tone=>
+                        <ToneButton 
+                            key={tone}
+                            label={tone}
+                            isSelected={selectedTone == tone}
+                            onSelect={()=>setSelectedTone(tone)} />
+                    ))}
 
+                
                 </div>
             </div>
 
