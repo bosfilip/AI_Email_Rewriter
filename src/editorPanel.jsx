@@ -3,6 +3,7 @@ import { useState } from 'react';
 import Subjest from './subject.jsx'
 import ToneButton from './toneButton.jsx'
 import Email from './email.jsx';
+import promptBuilder from './utils.js';
 
 export default function EditorPanel() {
 
@@ -11,6 +12,19 @@ export default function EditorPanel() {
     const [selectedTone,setSelectedTone] =useState("")
 
     const tones = ["Friendly","Formal","Concise","Confident","Polite Rejection"]
+
+    const prompt = promptBuilder({
+        subject: subject,
+        emailContent: email,
+        tone: selectedTone
+    })
+
+    const handleRewrite = () => {console.log(prompt)}
+    const clearEmailInput = () => {
+        setSubject(""),
+        setEmail(""),
+        setSelectedTone("Friendly")
+    }
 
     return (
         <div className="w-[550px] flex flex-col gap-6 rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-lg">
@@ -42,8 +56,8 @@ export default function EditorPanel() {
             </div>
 
             <div className="mt-auto flex items-center gap-4 border-t border-gray-200 pt-6">
-                <button className="flex-1 rounded-lg bg-blue-600 px-4 py-3 text-base font-semibold text-white shadow-sm hover:bg-blue-700 transition-colors active:bg-blue-500 ">Rewrite Email</button>
-                <button className="rounded-lg px-4 py-3 text-base font-medium text-gray-600 hover:bg-gray-100 transition-colors active:bg-gray-50">Clear</button>
+                <button onClick={handleRewrite} className="flex-1 rounded-lg bg-blue-600 px-4 py-3 text-base font-semibold text-white shadow-sm hover:bg-blue-700 transition-colors active:bg-blue-500 ">Rewrite Email</button>
+                <button onClick={clearEmailInput} className="rounded-lg px-4 py-3 text-base font-medium text-gray-600 hover:bg-gray-100 transition-colors active:bg-gray-50">Clear</button>
             </div>
         </div>
     )
