@@ -10,16 +10,41 @@ export default function EditorPanel() {
     const [subject,setSubject] = useState('')
     const [email,setEmail] = useState("")
     const [selectedTone,setSelectedTone] =useState("")
+    const [loading,setLoading] = useState(false)
+    const [rewrittenEmail, setRewrittenEmail] = useState("")   
+
 
     const tones = ["Friendly","Formal","Concise","Confident","Polite Rejection"]
 
-    const prompt = promptBuilder({
+    const handleRewrite = async () => { 
+        if (!email.trim()) return;
+        setLoading(true)
+
+        const prompt = promptBuilder({
         subject: subject,
         emailContent: email,
         tone: selectedTone
-    })
+        })
 
-    const handleRewrite = () => {console.log(prompt)}
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${import.meta.env.VITE_GEMINI_API_KEY}`
+
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                contents: [{
+                    parts: [{text: prompt}]
+                }]
+            }),
+        });
+
+        const data = await response.json();
+        const aiResponse = data.candidates[0].content.parts[0].text
+        console.log(aiResponse)
+        
+    }
     const clearEmailInput = () => {
         setSubject(""),
         setEmail(""),
