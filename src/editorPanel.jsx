@@ -1,17 +1,15 @@
 import React from 'react';
 import { useState } from 'react';
-import Subjest from './subject.jsx'
+import Subject from './subject.jsx'
 import ToneButton from './toneButton.jsx'
 import Email from './email.jsx';
 import promptBuilder from './utils.js';
 
-export default function EditorPanel() {
+export default function EditorPanel({ setLoading, setRewrittenEmail }) {
 
     const [subject,setSubject] = useState('')
     const [email,setEmail] = useState("")
-    const [selectedTone,setSelectedTone] =useState("")
-    const [loading,setLoading] = useState(false)
-    const [rewrittenEmail, setRewrittenEmail] = useState("")   
+    const [selectedTone,setSelectedTone] =useState("") 
 
 
     const tones = ["Friendly","Formal","Concise","Confident","Polite Rejection"]
@@ -41,6 +39,7 @@ export default function EditorPanel() {
         });
 
         const data = await response.json();
+        console.log(data)
         const aiResponse = data.candidates[0].content.parts[0].text
         console.log(aiResponse)
         
@@ -60,7 +59,7 @@ export default function EditorPanel() {
                 </div>
             </div>
 
-            <Subjest value={subject} onChange={setSubject}/>
+            <Subject value={subject} onChange={setSubject}/>
             <Email value={email} onChange={setEmail}/>
 
             <div className="flex flex-col gap-3">
