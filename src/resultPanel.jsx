@@ -2,10 +2,14 @@ import React from 'react';
 import { useState } from 'react';
 import EmailResult from './emailResult.jsx';
 import GrayButton from "./grayButton.jsx"
+import ListElement from './listElement.jsx';
 
-function ResultPanel() {
+function ResultPanel({text, changes, loading}) {
 
-    
+    const parts = changes.split("*")
+    const change1 = parts[0].trim()
+    const change2 = parts[1].trim()
+    const change3 = parts[2].trim()
 
 
     return (
@@ -21,15 +25,9 @@ function ResultPanel() {
                 </div>
 
                 <ul className="space-y-2 text-sm text-gray-600">
-                    <li className="flex items-start gap-2">
-                        <span>Key change 1</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                        <span>Key change 2</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                        <span>Key change 3</span>
-                    </li>
+                    <ListElement subject={change1}/>
+                    <ListElement subject={change2}/>
+                    <ListElement subject={change3}/>
                 </ul>
 
                 <div className="flex items-center gap-2 mt-2">

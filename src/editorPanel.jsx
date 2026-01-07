@@ -5,7 +5,7 @@ import ToneButton from './toneButton.jsx'
 import Email from './email.jsx';
 import promptBuilder from './utils.js';
 
-export default function EditorPanel({ setLoading, setRewrittenEmail }) {
+export default function EditorPanel({ setLoading, setRewrittenEmail, setChanges, changes }) {
 
     const [subject,setSubject] = useState('')
     const [email,setEmail] = useState("")
@@ -41,7 +41,10 @@ export default function EditorPanel({ setLoading, setRewrittenEmail }) {
         const data = await response.json();
         console.log(data)
         const aiResponse = data.candidates[0].content.parts[0].text
-        console.log(aiResponse)
+        const parts = aiResponse.split("###")
+        setRewrittenEmail(parts[0].trim())
+        setChanges(parts[1].trim())
+        console.log(changes)
         
     }
     const clearEmailInput = () => {
