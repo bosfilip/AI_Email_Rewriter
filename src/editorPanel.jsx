@@ -5,7 +5,7 @@ import ToneButton from './toneButton.jsx'
 import Email from './email.jsx';
 import promptBuilder from './utils.js';
 
-export default function EditorPanel({ setLoading, setRewrittenEmail, setChanges, changes }) {
+export default function EditorPanel({ setLoading, setRewrittenEmail, setChanges }) {
 
     const [subject,setSubject] = useState('')
     const [email,setEmail] = useState("")
@@ -44,7 +44,6 @@ export default function EditorPanel({ setLoading, setRewrittenEmail, setChanges,
         const parts = aiResponse.split("###")
         setRewrittenEmail(parts[0].trim())
         setChanges(parts[1].trim())
-        console.log(changes)
         
     }
     const clearEmailInput = () => {
@@ -54,36 +53,32 @@ export default function EditorPanel({ setLoading, setRewrittenEmail, setChanges,
     }
 
     return (
-        <div className="w-[550px] flex flex-col gap-6 rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-lg">
+        <div className="flex h-full flex-col rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-lg">
             
-            <div className="flex items-center justify-between">
+            <div className="mb-6 flex items-center justify-between">
                 <h3 className="text-lg font-bold leading-tight tracking-tight text-gray-900">Original Email</h3>
-                <div className="flex items-center gap-1">
+            </div>
+
+            <div className="flex-1 space-y-4">
+                <Subject value={subject} onChange={setSubject}/>
+                <Email value={email} onChange={setEmail}/>
+
+                <div className="flex flex-col gap-3 pt-2">
+                    <h3 className="text-base font-bold text-gray-900">Choose Tone</h3>
+                    <div className="flex flex-wrap gap-2">
+                        {tones.map((tone=>
+                            <ToneButton 
+                                key={tone}
+                                label={tone}
+                                isSelected={selectedTone == tone}
+                                onSelect={()=>setSelectedTone(tone)} />
+                        ))}
+                    </div>
                 </div>
             </div>
 
-            <Subject value={subject} onChange={setSubject}/>
-            <Email value={email} onChange={setEmail}/>
-
-            <div className="flex flex-col gap-3">
-
-                <h3 className="text-base font-bold text-gray-900">Choose Tone</h3>
-                <div className="flex flex-wrap gap-2">
-                    
-                    {tones.map((tone=>
-                        <ToneButton 
-                            key={tone}
-                            label={tone}
-                            isSelected={selectedTone == tone}
-                            onSelect={()=>setSelectedTone(tone)} />
-                    ))}
-
-                
-                </div>
-            </div>
-
-            <div className="mt-auto flex items-center gap-4 border-t border-gray-200 pt-6">
-                <button onClick={handleRewrite} className="flex-1 rounded-lg bg-blue-600 px-4 py-3 text-base font-semibold text-white shadow-sm hover:bg-blue-700 transition-colors active:bg-blue-500 ">Rewrite Email</button>
+            <div className="mt-8 flex items-center gap-4 border-t border-gray-200 pt-6">
+                <button onClick={handleRewrite} className="flex-1 rounded-lg bg-blue-600 px-4 py-3 text-base font-semibold text-white shadow-sm hover:bg-blue-700 transition-colors active:bg-blue-500">Rewrite Email</button>
                 <button onClick={clearEmailInput} className="rounded-lg px-4 py-3 text-base font-medium text-gray-600 hover:bg-gray-100 transition-colors active:bg-gray-50">Clear</button>
             </div>
         </div>

@@ -10,20 +10,24 @@ function App() {
   const [changes, setChanges] = useState("")
 
   return(
-  <>
-      <Header/>
-      <div className='flex gap-5 px-10 py-10 justify-center'>
-        <EditorPanel
-        setRewrittenEmail={setRewrittenEmail}
-        setChanges={setChanges}
-        setLoading={setLoading}
-        changes={changes}/>
-        <ResultPanel
-        text = {rewrittenEmail}
-        changes = {changes}
-        loading = {loading}/>
+    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl">
+          <Header/>
+          <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-2">
+            <EditorPanel
+              setRewrittenEmail={setRewrittenEmail}
+              setChanges={setChanges}
+              setLoading={setLoading}
+              changes={changes}
+            />
+            <ResultPanel
+              text={rewrittenEmail}
+              changes={changes}
+              loading={loading}
+            />
+          </div>
       </div>
-  </>
+    </div>
   )
 }
 
