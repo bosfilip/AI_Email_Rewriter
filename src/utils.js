@@ -24,9 +24,9 @@ export default function promptBuilder({subject,emailContent,tone}){
             Structure your response like this:
             [Rewritten Email]
             ###
-            1. Change one*
-            2. Change two*
-            3. Change three*`
+            Change one*
+            Change two*
+            Change three*`
 
 
 }

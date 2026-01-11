@@ -1,45 +1,75 @@
-import React from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import EmailResult from './emailResult.jsx';
-import GrayButton from "./grayButton.jsx"
 import ListElement from './listElement.jsx';
 
-function ResultPanel({text, changes, loading}) {
-
-        const parts = changes ? changes.split("*") : [];
-        const change1 = parts[0] || "Changes will appear here after rewrite"
-        const change2 = parts[1] || ""
-        const change3 = parts[2] || ""
+function ResultPanel({ text, changes, loading }) {
+    const [copyStatus, setCopyStatus] = useState("Copy");
+    const parts = changes ? changes.split("*").filter(p => p.trim() !== "") : [];
     
-    return (
-        <div className="flex h-full flex-col rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-lg">
-            
-            <h3 className="mb-6 text-lg font-bold leading-tight tracking-tight text-gray-900">Rewritten Email</h3>
+    const handleCopy = async () => {
+        if (!text) return;
+        try {
+            await navigator.clipboard.writeText(text);
+            setCopyStatus("Copied!");
+            setTimeout(() => setCopyStatus("Copy"), 2000);
+        } catch (err) {
+            console.error(err);
+        }
+    };
 
-            <div className="flex-1">
-                <EmailResult value={text}/>
+    return (
+        <div className="flex h-full w-full flex-col rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:bg-gray-800 dark:border-gray-700 transition-colors duration-200">
+            <div className="mb-6 flex items-center justify-between border-b border-gray-100 pb-4 dark:border-gray-700">
+                <h3 className="text-lg font-bold leading-tight tracking-tight text-gray-900 dark:text-white">
+                    {loading ? "Improving your message..." : text ? "Ready to send" : "Your polished email"}
+                </h3>
             </div>
 
-            <div className="mt-6 space-y-6">
-                <div className="w-full h-px bg-gray-200"></div>
-                
-                <div>
-                    <h4 className="mb-3 font-semibold text-gray-900">Key Changes</h4>
-                    <ul className="space-y-2 text-sm text-gray-600">
-                        <ListElement subject={change1}/>
-                        <ListElement subject={change2}/>
-                        <ListElement subject={change3}/>
-                    </ul>
-                </div>
+            <div className="flex-1 min-h-[200px]">
+                {loading ? (
+                    <div className="animate-pulse space-y-4 p-2">
+                        <div className="h-4 bg-gray-100 dark:bg-gray-700 rounded w-3/4"></div>
+                        <div className="h-4 bg-gray-100 dark:bg-gray-700 rounded w-full"></div>
+                        <div className="h-4 bg-gray-100 dark:bg-gray-700 rounded w-5/6"></div>
+                    </div>
+                ) : (
+                    <div className="h-full">
+                         <EmailResult value={text}/>
+                    </div>
+                )}
+            </div>
 
-                <div className="flex flex-wrap items-center gap-2 pt-2">
-                    <GrayButton><img className='w-5 h-5 mr-2' src="public/assets/logo/copy-document.png"/>Copy</GrayButton>
-                    <GrayButton><img className='w-5 h-5 mr-2' src='public/assets/logo/download.png'/>Download</GrayButton>
-                    <GrayButton><img className="w-5 h-5 mr-2" src='public/assets/logo/email-i.png'/>Open in Mail</GrayButton>
+            <div className="mt-6 space-y-4">
+                {text && !loading && (
+                    <>
+                        <div className="h-px w-full bg-gray-100 dark:bg-gray-700"></div>
+                        <div>
+                            <h4 className="mb-3 text-xs font-bold uppercase tracking-widest text-gray-400">Key Improvements</h4>
+                            <ul className="space-y-2">
+                                {parts.map((item, i) => (
+                                    <ListElement key={i} subject={item.trim()} />
+                                ))}
+                            </ul>
+                        </div>
+                    </>
+                )}
+
+                <div className={`flex items-center gap-3 pt-4 border-t border-gray-100 dark:border-gray-700 transition-opacity duration-300 ${!text || loading ? 'opacity-50 pointer-events-none' : 'opacity-100'}`}>
+                    <button 
+                        onClick={handleCopy}
+                        className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-blue-600 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-blue-700 active:bg-blue-500 active:scale-95 disabled:bg-blue-400">{copyStatus}
+                    </button>
+
+                    <button 
+                        onClick={() => window.location.href = `mailto:?body=${encodeURIComponent(text)}`}
+                        className="flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 bg-white transition-all hover:bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:hover:bg-gray-600 active:scale-90" 
+                    >
+                        <img className="w-5 h-5 opacity-70 dark:invert" src='/public/assets/logo/email-i.png' alt="email"/>
+                    </button>
                 </div>
             </div>
         </div>
-    )
+    );
 }
 
-export default ResultPanel
+export default ResultPanel;
