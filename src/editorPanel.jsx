@@ -5,7 +5,7 @@ import ToneButton from './toneButton.jsx'
 import Email from './email.jsx';
 import promptBuilder from './utils.js';
 
-export default function EditorPanel({ setLoading, setRewrittenEmail, setChanges, loading }) {
+export default function EditorPanel({ setLoading, setRewrittenEmail, setChanges, loading, setError }) {
 
     const [subject,setSubject] = useState('')
     const [email,setEmail] = useState("")
@@ -17,6 +17,9 @@ export default function EditorPanel({ setLoading, setRewrittenEmail, setChanges,
         if (!email.trim() || loading) return;
         
         setLoading(true)
+        setError(null)
+        setRewrittenEmail("")
+        setChanges("")
 
         try {
             const prompt = promptBuilder({
@@ -39,7 +42,16 @@ export default function EditorPanel({ setLoading, setRewrittenEmail, setChanges,
                 }),
             });
 
+            if (!response.ok) {
+                throw new Error(`Request failed with status ${response.status}`);
+            }
+
             const data = await response.json();
+
+            if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
+                throw new Error("Received empty response from AI");
+            }
+
             const aiResponse = data.candidates[0].content.parts[0].text
             const parts = aiResponse.split("###")
 
@@ -52,7 +64,7 @@ export default function EditorPanel({ setLoading, setRewrittenEmail, setChanges,
             }
         } catch (error) {
             console.error(error)
-            alert('Something went wrong, please try again')
+            setError(error.message || 'Something went wrong, please try again')
         } finally {
             setLoading(false)
         }
@@ -62,6 +74,7 @@ export default function EditorPanel({ setLoading, setRewrittenEmail, setChanges,
         setSubject("")
         setEmail("")
         setSelectedTone("Friendly")
+        setError(null)
     }
 
     return (

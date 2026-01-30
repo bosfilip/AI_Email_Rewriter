@@ -7,6 +7,7 @@ function App() {
   const [loading, setLoading] = useState(false) 
   const [rewrittenEmail, setRewrittenEmail] = useState("")  
   const [changes, setChanges] = useState("")
+  const [error, setError] = useState(null)
   const [darkMode, setDarkMode] = useState(false)
 
   useEffect(() => {
@@ -27,11 +28,13 @@ function App() {
             setChanges={setChanges}
             setLoading={setLoading}
             loading={loading}
+            setError={setError}
           />
           <ResultPanel
             text={rewrittenEmail}
             changes={changes}
             loading={loading}
+            error={error}
           />
         </div>
       </div>
